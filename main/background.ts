@@ -20,8 +20,8 @@ if (isProd) {
 
   const port = process.argv[2]
   const sidebarUrl = isProd
-    ? 'app://./home.html'
-    : `http://localhost:${port}/home`
+    ? 'app://./sidebar.html'
+    : `http://localhost:${port}/sidebar`
 
   const sidebar = new BrowserView()
   mainWindow.addBrowserView(sidebar)
@@ -50,7 +50,9 @@ if (isProd) {
   sidebar.webContents.addListener(
     'console-message',
     (_event, level, message, line, sourceId) => {
-      console.log('sidebar-message', message, level, line, sourceId)
+      if (message.startsWith('[LINK_CLICKED]')) {
+        rightView.webContents.loadURL(message.replace('[LINK_CLICKED]', ''))
+      }
     }
   )
 
