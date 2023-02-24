@@ -1,7 +1,8 @@
 import React from 'react'
-import Chip from '../components/chip'
-import { FaBeer, FaGithub, FaCalendarAlt } from 'react-icons/fa'
+import Head from 'next/head'
+import { FaBeer, FaCalendarAlt, FaGithub } from 'react-icons/fa'
 import Gmail from '../icons/gmail'
+import Chip from '../components/chip'
 
 const Link = ({ link }) => {
   const callback = () => {
@@ -14,7 +15,7 @@ const Link = ({ link }) => {
   )
 }
 
-function Sidebar() {
+function AppStore() {
   const sidebarContents = React.useMemo(() => {
     return new Map([
       ['beer', { Icon: FaBeer, link: 'app-store' }],
@@ -28,13 +29,16 @@ function Sidebar() {
   }, [])
   return (
     <React.Fragment>
-      <div className="text-2xl w-full">
+      <Head>
+        <title> AppStore - Nextron (with-typescript-tailwindcss)</title>
+      </Head>
+      <div className="grid grid-cols-4 gap-4">
         {Array.from(sidebarContents).map(([key, { Icon, link }]) => (
-          <Chip key={key} Icon={Icon} link={link} />
+          <Chip Icon={Icon} link={link} />
         ))}
       </div>
     </React.Fragment>
   )
 }
 
-export default Sidebar
+export default AppStore

@@ -1,6 +1,7 @@
 import { app, BrowserView } from 'electron'
 import serve from 'electron-serve'
 import { createWindow } from './helpers'
+import { CONSTANTS } from './helpers/constants'
 
 const isProd: boolean = process.env.NODE_ENV === 'production'
 
@@ -17,26 +18,42 @@ if (isProd) {
     width: 1000,
     height: 600,
   })
-
-  const port = process.argv[2]
-  const sidebarUrl = isProd
-    ? 'app://./sidebar.html'
-    : `http://localhost:${port}/sidebar`
+  const [width, height] = mainWindow.getSize()
 
   const sidebar = new BrowserView()
   mainWindow.addBrowserView(sidebar)
-  sidebar.setBounds({ x: 0, y: 0, width: 300, height: 600 })
-  sidebar.webContents.loadURL(sidebarUrl)
+  sidebar.setBounds({
+    x: 0,
+    y: CONSTANTS.headerHeight,
+    width: CONSTANTS.sidebarWidth,
+    height: height,
+  })
+  sidebar.webContents.loadURL(CONSTANTS.SIDEBAR_URL)
 
   const rightView = new BrowserView()
   mainWindow.addBrowserView(rightView)
-  rightView.setBounds({ x: 300, y: 0, width: 700, height: 600 })
-  rightView.webContents.loadURL('https://mail.google.com')
+  rightView.setBounds({
+    x: CONSTANTS.sidebarWidth,
+    y: CONSTANTS.headerHeight,
+    width: width - CONSTANTS.sidebarWidth,
+    height: height,
+  })
+  rightView.webContents.loadURL(CONSTANTS.APPSTORE_URL)
 
   mainWindow.on('resize', () => {
     const [width, height] = mainWindow.getSize()
-    sidebar.setBounds({ x: 0, y: 0, width: 300, height })
-    rightView.setBounds({ x: 300, y: 0, width: width - 300, height })
+    sidebar.setBounds({
+      x: 0,
+      y: CONSTANTS.headerHeight,
+      width: CONSTANTS.sidebarWidth,
+      height,
+    })
+    rightView.setBounds({
+      x: CONSTANTS.sidebarWidth,
+      y: CONSTANTS.headerHeight,
+      width: width - CONSTANTS.sidebarWidth,
+      height,
+    })
   })
 
   // When sidebar sends a message to the main process, we reload the right view
@@ -49,9 +66,14 @@ if (isProd) {
 
   sidebar.webContents.addListener(
     'console-message',
-    (_event, level, message, line, sourceId) => {
+    (_event, _level, message) => {
       if (message.startsWith('[LINK_CLICKED]')) {
-        rightView.webContents.loadURL(message.replace('[LINK_CLICKED]', ''))
+        const destination = message.replace('[LINK_CLICKED]', '')
+        if (destination === 'app-store') {
+          rightView.webContents.loadURL(CONSTANTS.APPSTORE_URL)
+        } else {
+          rightView.webContents.loadURL(message.replace('[LINK_CLICKED]', ''))
+        }
       }
     }
   )
