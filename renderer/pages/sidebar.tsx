@@ -28,7 +28,7 @@ function Sidebar() {
   }, [])
   return (
     <React.Fragment>
-      <div className="text-2xl w-full">
+      <div className="w-full">
         {Array.from(sidebarContents).map(([key, { Icon, link }]) => (
           <Chip key={key} Icon={Icon} link={link} />
         ))}
