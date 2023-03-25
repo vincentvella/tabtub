@@ -3,13 +3,11 @@ const PORT = process.argv[2]
 
 export const CONSTANTS = {
   headerHeight: 28,
-  sidebarWidth: 100,
+  sidebarWidth: 56,
   isProd,
   PORT,
   SIDEBAR_URL: isProd
     ? 'app://./sidebar.html'
     : `http://localhost:${PORT}/sidebar`,
-  APPSTORE_URL: isProd
-    ? 'app://./app-store.html'
-    : `http://localhost:${PORT}/app-store`,
+  APPSTORE_URL: isProd ? 'app://./add.html' : `http://localhost:${PORT}/add`,
 }
