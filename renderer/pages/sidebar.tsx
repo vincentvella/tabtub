@@ -6,7 +6,8 @@ import Gmail from '../icons/gmail'
 const SidebarButton = (props: ChipProps) => {
   const { Icon, link } = props
   const callback = React.useCallback(() => {
-    console.log('[LINK_CLICKED]' + link)
+    window.api.changeTab(link)
+    // console.log('[LINK_CLICKED]' + link)
   }, [])
   return (
     <button className="rounded-full" onClick={callback}>
@@ -24,6 +25,20 @@ const contents = new Map([
 
 function Sidebar() {
   const sidebarContents = React.useMemo(() => contents, [])
+
+  React.useEffect(() => {
+    if (window) {
+      window.api.receiveTabs((...data) => {
+        console.log(`Received data from main process`)
+        console.log(data)
+      })
+      window.api.requestTabs()
+      // setTimeout(() => {
+      //   window.api.requestStorage()
+      // }, 2000)
+      // we are on the client process.
+    }
+  }, [])
 
   return (
     <React.Fragment>
