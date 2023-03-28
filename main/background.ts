@@ -1,6 +1,7 @@
 import { app as electron } from 'electron'
 import serve from 'electron-serve'
 import { App } from './entities/app'
+import { SidebarMessageBroker } from './entities/sidebar-message-broker'
 import { CONSTANTS } from './helpers/constants'
 
 if (CONSTANTS.isProd) {
@@ -11,10 +12,8 @@ if (CONSTANTS.isProd) {
 
 ; (async () => {
 	await electron.whenReady()
-	new App()
-	// setTimeout(() => {
-	// 	app.leftBrowser.webContents.send('[LEFT]')
-	// }, 2000)
+	const app = new App()
+	new SidebarMessageBroker(app)
 })()
 
 electron.on('window-all-closed', () => {

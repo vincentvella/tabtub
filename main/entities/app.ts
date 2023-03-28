@@ -3,12 +3,13 @@ import { BrowserView, BrowserWindow } from 'electron'
 import { CONSTANTS } from '../helpers/constants'
 import createWindow from '../helpers/create-window'
 import { ACTIONS } from '../helpers/actions'
+import { CHANNELS } from '../helpers/events'
 
 export class App {
 	public window: BrowserWindow
 	public leftBrowser: BrowserView
 	public rightBrowser: BrowserView
-	private activeUrl: string
+	public activeUrl: string
 
 	constructor() {
 		this.window = createWindow('main', {
@@ -67,23 +68,6 @@ export class App {
 				height,
 			})
 		})
-
-		// When sidebar sends a message to the main process, we reload the right view
-		this.leftBrowser.webContents.addListener(
-			'ipc-message',
-			(_event, channel, message) => {
-				switch (channel) {
-					case ACTIONS.CHANGE_TAB:
-						this.handleTabChange(message)
-						break;
-					case ACTIONS.REQUEST_TABS:
-						this.handleTabsRequest()
-						break;
-					default:
-						console.log('UNHANDLED ACTION:', channel, message)
-				}
-			}
-		)
 	}
 
 	private addBrowser(): BrowserView {
@@ -94,25 +78,5 @@ export class App {
 		})
 		this.window.addBrowserView(browser)
 		return browser
-	}
-
-	private handleTabChange(message: string) {
-		console.log('Tab Change: ', message)
-		if (message === 'add') {
-			// Special case to load the add page
-			if (message !== this.activeUrl) {
-				this.activeUrl = message
-				this.rightBrowser.webContents.loadURL(CONSTANTS.ADD_URL)
-			}
-		} else {
-			this.activeUrl = message
-			this.rightBrowser.webContents.loadURL(message)
-		}
-	}
-
-	private handleTabsRequest() {
-		console.log('Fetching Tabs From Storage')
-		this.leftBrowser.webContents.send('[TABS]', {})
-		return []
 	}
 }

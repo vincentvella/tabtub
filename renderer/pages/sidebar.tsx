@@ -2,6 +2,13 @@ import React from 'react'
 import Chip, { ChipProps } from '../components/chip'
 import { FaGithub, FaCalendarAlt, FaPlus } from 'react-icons/fa'
 import Gmail from '../icons/gmail'
+import AllIcons, { IconName } from '../icons'
+
+type Tab = {
+  id: string
+  Icon: IconName
+  link: string
+}
 
 const SidebarButton = (props: ChipProps) => {
   const { Icon, link } = props
@@ -16,35 +23,25 @@ const SidebarButton = (props: ChipProps) => {
   )
 }
 
-const contents = new Map([
-  ['add', { Icon: FaPlus, link: 'add' }],
-  ['github', { Icon: FaGithub, link: 'https://github.com' }],
-  ['mail', { Icon: Gmail, link: 'https://mail.google.com' }],
-  ['calendar', { Icon: FaCalendarAlt, link: 'https://calendar.google.com' }],
-])
+const AddTab: Tab = { id: 'add', Icon: 'FaPlus', link: 'add' }
 
 function Sidebar() {
-  const sidebarContents = React.useMemo(() => contents, [])
+  const [tabs, setTabs] = React.useState<Tab[]>([AddTab])
 
   React.useEffect(() => {
     if (window) {
-      window.api.receiveTabs((...data) => {
-        console.log(`Received data from main process`)
-        console.log(data)
+      window.api.getTabs().then((data: string[]) => {
+        console.log({ data })
+        setTabs([AddTab, ...data.map((tab) => JSON.parse(tab) as Tab)])
       })
-      window.api.requestTabs()
-      // setTimeout(() => {
-      //   window.api.requestStorage()
-      // }, 2000)
-      // we are on the client process.
     }
   }, [])
 
   return (
     <React.Fragment>
       <div className="w-full bg-gray-700 min-h-screen pt-0.5">
-        {Array.from(sidebarContents).map(([key, { Icon, link }]) => (
-          <SidebarButton key={key} Icon={Icon} link={link} />
+        {tabs.map(({ Icon, link, id }) => (
+          <SidebarButton key={id} Icon={AllIcons[Icon]} link={link} />
         ))}
       </div>
     </React.Fragment>
