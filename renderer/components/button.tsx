@@ -1,20 +1,24 @@
 import React from 'react'
-import { IconType } from 'react-icons/lib'
-import Chip, { ChipProps } from './chip'
+import AllIcons, { IconName } from '../icons'
+import Chip from './chip'
 
-interface ButtonProps extends ChipProps {
-  Icon: IconType
+export interface ButtonProps {
+  icon: IconName
   link: string
   text?: string
 }
 
-const Button: React.FC<ButtonProps> = ({ Icon, link, text }) => {
+const Button: React.FC<ButtonProps> = ({ icon, link, text }) => {
   const callback = () => {
-    console.log('[LINK_CLICKED]' + link)
+    window.api.addTab({ icon, url: link })
   }
   return (
-    <button className="flex rounded-xl bg-indigo-900">
-      <Chip link={link} Icon={Icon} />
+    <button
+      className="flex rounded-xl bg-indigo-900"
+      onClick={callback}
+      onAuxClick={() => console.log('hello')}
+    >
+      <Chip Icon={AllIcons[icon]} />
       {!!text && <span className="self-center">{text}</span>}
     </button>
   )

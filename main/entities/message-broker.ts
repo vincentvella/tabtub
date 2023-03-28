@@ -25,6 +25,9 @@ export class MessageBroker {
 			case ACTIONS.REQUEST_TABS:
 				this.handleTabsRequest()
 				break;
+			case ACTIONS.REMOVE_TAB:
+				this.removeTab(data)
+				break;
 			default:
 				console.log('UNHANDLED ACTION:', channel, data)
 		}
@@ -57,6 +60,19 @@ export class MessageBroker {
 		this.app.rightBrowser.webContents.send(CHANNELS.WINDOW, ACTIONS.ADD_TAB, id)
 		const tabs = this.app.store.tabStorage.getAll()
 		this.app.leftBrowser.webContents.send(CHANNELS.SIDEBAR, ACTIONS.SUBSCRIBE_TABS, tabs)
+		this.handleTabChange(id)
 		return id
+	}
+
+	private removeTab(id: string) {
+		// Get url for removed id
+		const activeTab = this.app.store.tabStorage.get(id).url
+		this.app.store.tabStorage.remove(id)
+		// If deleted url is the same as active... navigate the user to the add screen
+		if (this.app.activeUrl === activeTab) {
+			this.handleTabChange('add')
+		}
+		const tabs = this.app.store.tabStorage.getAll()
+		this.app.leftBrowser.webContents.send(CHANNELS.SIDEBAR, ACTIONS.SUBSCRIBE_TABS, tabs)
 	}
 }

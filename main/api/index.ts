@@ -23,9 +23,10 @@ const resolver = (channel: ValueOf<typeof CHANNELS>, action: ValueOf<typeof CHAN
 export type Api = typeof ElectronApi
 
 export const ElectronApi = {
-	changeTab: (id: string) => ipcRenderer.send(ACTIONS.CHANGE_TAB, id),
 	addTab: (tab: Tab) => resolver(CHANNELS.WINDOW, ACTIONS.ADD_TAB, tab),
+	changeTab: (id: string) => ipcRenderer.send(ACTIONS.CHANGE_TAB, id),
 	getTabs: () => resolver(CHANNELS.SIDEBAR, ACTIONS.REQUEST_TABS),
+	removeTab: (id: string) => resolver(CHANNELS.SIDEBAR, ACTIONS.REMOVE_TAB, id),
 	subscribeToTabs: (func: Callback) => {
 		const listener: Listener = (_event, type, data) => {
 			if (type === ACTIONS.SUBSCRIBE_TABS) {

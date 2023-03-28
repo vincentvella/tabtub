@@ -27,6 +27,10 @@ class TabStorage {
 		return this.store.get(id)
 	}
 
+	remove(id: string) {
+		return this.store.delete(id)
+	}
+
 	getAll() {
 		return Object.entries(this.store.store as Record<string, Tab>).map(([key, value]) => ({ id: key, ...value }))
 	}

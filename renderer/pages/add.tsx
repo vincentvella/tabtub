@@ -2,12 +2,12 @@ import React from 'react'
 import { z, ZodError } from 'zod'
 import { FaCalendarAlt, FaGithub } from 'react-icons/fa'
 import Gmail from '../icons/gmail'
-import Button from '../components/button'
+import Button, { ButtonProps } from '../components/button'
 
-const contents = new Map([
-  ['github', { Icon: FaGithub, link: 'https://github.com' }],
-  ['mail', { Icon: Gmail, link: 'https://mail.google.com' }],
-  ['calendar', { Icon: FaCalendarAlt, link: 'https://calendar.google.com' }],
+const contents = new Map<string, ButtonProps>([
+  ['github', { icon: 'FaGithub', link: 'https://github.com' }],
+  ['mail', { icon: 'Gmail', link: 'https://mail.google.com' }],
+  ['calendar', { icon: 'FaCalendarAlt', link: 'https://calendar.google.com' }],
 ])
 
 const url = z.string().url().min(1)
@@ -21,9 +21,7 @@ const TabCreator = () => {
     try {
       const validatedUrl = url.parse(urlRef.current.value)
       setError('')
-      window?.api?.addTab({ url: validatedUrl, icon: 'FaBeer' }).then((id: string) => {
-        window?.api?.changeTab(id)
-      })
+      window?.api.addTab({ url: validatedUrl, icon: 'FaBeer' })
       // Store url persistently
       // Navigate user to new tab
     } catch (error) {
@@ -65,8 +63,8 @@ function AppStore() {
       <div className="pb-4">
         <span className="pb-4">Select an app from below to add to your tabs</span>
         <div className="grid grid-cols-4 gap-4">
-          {Array.from(sidebarContents).map(([key, { Icon, link }]) => (
-            <Button key={key} Icon={Icon} link={link} text={key} />
+          {Array.from(sidebarContents).map(([key, { icon, link }]) => (
+            <Button key={key} icon={icon} link={link} text={key} />
           ))}
         </div>
       </div>

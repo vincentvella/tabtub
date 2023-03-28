@@ -11,9 +11,10 @@ type Tab = {
 
 const SidebarButton = (props: Tab) => {
   const { icon, id } = props
-  const callback = React.useCallback(() => window.api.changeTab(id), [])
+  const callback = React.useCallback(() => window.api.changeTab(id), [id])
+  const removeIcon = React.useCallback(() => window.api.removeTab(id), [id])
   return (
-    <button className="rounded-full" onClick={callback}>
+    <button onContextMenu={removeIcon} className="rounded-full" onClick={callback}>
       <Chip Icon={AllIcons[icon]} />
     </button>
   )
