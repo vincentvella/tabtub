@@ -1,5 +1,5 @@
-import { ACTIONS } from "../helpers/actions";
-import { CHANNELS } from "../helpers/events";
+import { ACTIONS } from "../api/actions";
+import { CHANNELS } from "../api/events";
 import { CONSTANTS } from "../helpers/constants";
 import { App } from "./app";
 

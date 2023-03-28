@@ -2,8 +2,8 @@ import path from 'path'
 import { BrowserView, BrowserWindow } from 'electron'
 import { CONSTANTS } from '../helpers/constants'
 import createWindow from '../helpers/create-window'
-import { ACTIONS } from '../helpers/actions'
-import { CHANNELS } from '../helpers/events'
+import { ACTIONS } from '../api/actions'
+import { CHANNELS } from '../api/events'
 
 export class App {
 	public window: BrowserWindow

@@ -1,7 +1,5 @@
 import React from 'react'
 import Chip, { ChipProps } from '../components/chip'
-import { FaGithub, FaCalendarAlt, FaPlus } from 'react-icons/fa'
-import Gmail from '../icons/gmail'
 import AllIcons, { IconName } from '../icons'
 
 type Tab = {
