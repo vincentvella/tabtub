@@ -1,46 +1,50 @@
 import React from 'react'
-import Chip, { ChipProps } from '../components/chip'
+import { ErrorBoundary } from 'react-error-boundary'
+import Chip from '../components/chip'
 import AllIcons, { IconName } from '../icons'
 
 type Tab = {
   id: string
-  Icon: IconName
-  link: string
+  icon: IconName
+  url: string
 }
 
-const SidebarButton = (props: ChipProps) => {
-  const { Icon, link } = props
-  const callback = React.useCallback(() => {
-    window.api.changeTab(link)
-    // console.log('[LINK_CLICKED]' + link)
-  }, [])
+const SidebarButton = (props: Tab) => {
+  const { icon, id } = props
+  const callback = React.useCallback(() => window.api.changeTab(id), [])
   return (
     <button className="rounded-full" onClick={callback}>
-      <Chip Icon={Icon} link={link} />
+      <Chip Icon={AllIcons[icon]} />
     </button>
   )
 }
 
-const AddTab: Tab = { id: 'add', Icon: 'FaPlus', link: 'add' }
+const AddTab: Tab = { id: 'add', icon: 'FaPlus', url: 'add' }
 
 function Sidebar() {
   const [tabs, setTabs] = React.useState<Tab[]>([AddTab])
 
   React.useEffect(() => {
-    if (window) {
-      window.api.getTabs().then((data: string[]) => {
-        console.log({ data })
-        setTabs([AddTab, ...data.map((tab) => JSON.parse(tab) as Tab)])
-      })
-    }
+    // Get Tabs from Electron
+    window?.api.getTabs().then((data: Tab[]) => {
+      setTabs([AddTab, ...data])
+    })
+  }, [])
+
+  React.useEffect(() => {
+    window?.api.subscribeToTabs((data) => {
+      setTabs([AddTab, ...data])
+    })
   }, [])
 
   return (
     <React.Fragment>
       <div className="w-full bg-gray-700 min-h-screen pt-0.5">
-        {tabs.map(({ Icon, link, id }) => (
-          <SidebarButton key={id} Icon={AllIcons[Icon]} link={link} />
-        ))}
+        <ErrorBoundary FallbackComponent={null}>
+          {tabs.map(({ icon, url, id }) => (
+            <SidebarButton key={id} id={id} icon={icon} url={url} />
+          ))}
+        </ErrorBoundary>
       </div>
     </React.Fragment>
   )

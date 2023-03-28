@@ -21,7 +21,9 @@ const TabCreator = () => {
     try {
       const validatedUrl = url.parse(urlRef.current.value)
       setError('')
-      console.log(validatedUrl)
+      window?.api?.addTab({ url: validatedUrl, icon: 'FaBeer' }).then((id: string) => {
+        window?.api?.changeTab(id)
+      })
       // Store url persistently
       // Navigate user to new tab
     } catch (error) {

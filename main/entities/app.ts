@@ -2,14 +2,14 @@ import path from 'path'
 import { BrowserView, BrowserWindow } from 'electron'
 import { CONSTANTS } from '../helpers/constants'
 import createWindow from '../helpers/create-window'
-import { ACTIONS } from '../api/actions'
-import { CHANNELS } from '../api/events'
+import Store from './store'
 
 export class App {
 	public window: BrowserWindow
 	public leftBrowser: BrowserView
 	public rightBrowser: BrowserView
 	public activeUrl: string
+	public store: Store
 
 	constructor() {
 		this.window = createWindow('main', {
@@ -33,6 +33,7 @@ export class App {
 			height,
 		})
 		this.rightBrowser.webContents.loadURL(CONSTANTS.ADD_URL)
+		this.store = new Store()
 		this.setupListeners()
 		if (!CONSTANTS.isProd) {
 			this.setupDevtools()
@@ -44,7 +45,7 @@ export class App {
 		this.rightBrowser.webContents.openDevTools({ mode: 'detach' })
 		this.leftBrowser.webContents.on(
 			'devtools-reload-page',
-			(event, dirty, image) => {
+			(_event, _dirty, _image) => {
 				console.log('RELOAD')
 				this.leftBrowser.webContents.reload()
 				this.rightBrowser.webContents.reload()

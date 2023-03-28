@@ -3,7 +3,6 @@ import { IconType } from 'react-icons/lib'
 
 export interface ChipProps {
   Icon: IconType
-  link: string
 }
 
 const Chip: React.FC<ChipProps> = ({ Icon }) => (

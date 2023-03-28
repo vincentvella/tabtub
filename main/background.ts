@@ -1,7 +1,8 @@
 import { app as electron } from 'electron'
 import serve from 'electron-serve'
 import { App } from './entities/app'
-import { SidebarMessageBroker } from './entities/sidebar-message-broker'
+import Store from 'electron-store'
+import { MessageBroker } from './entities/message-broker'
 import { CONSTANTS } from './helpers/constants'
 
 if (CONSTANTS.isProd) {
@@ -13,7 +14,7 @@ if (CONSTANTS.isProd) {
 ; (async () => {
 	await electron.whenReady()
 	const app = new App()
-	new SidebarMessageBroker(app)
+	new MessageBroker(app)
 })()
 
 electron.on('window-all-closed', () => {
