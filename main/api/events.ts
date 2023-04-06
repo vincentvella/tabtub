@@ -1,4 +1,5 @@
 export const CHANNELS = {
+	CONTEXT_MENU: '[CONTEXT_MENU]',
 	SIDEBAR: '[SIDEBAR]',
 	WINDOW: '[WINDOW]',
 }

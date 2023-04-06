@@ -12,7 +12,18 @@ type Tab = {
 const SidebarButton = (props: Tab) => {
   const { icon, id } = props
   const callback = React.useCallback(() => window.api.changeTab(id), [id])
-  const removeIcon = React.useCallback(() => window.api.removeTab(id), [id])
+  const removeIcon = React.useCallback<React.MouseEventHandler<HTMLButtonElement>>((e) => {
+    const element = e.target as HTMLElement
+    const position = element.getBoundingClientRect()
+    if (id === 'add') {
+      window.api.closeContextMenu()
+    } else {
+      window.api.openContextMenu(id, {
+        x: position.x + position.width,
+        y: position.y + position.height,
+      })
+    }
+  }, [])
   return (
     <button onContextMenu={removeIcon} className="rounded-full" onClick={callback}>
       <Chip Icon={AllIcons[icon]} />
@@ -40,7 +51,11 @@ function Sidebar() {
 
   return (
     <React.Fragment>
-      <div className="w-full bg-gray-700 min-h-screen pt-0.5">
+      <div
+        // Close context menu if user clicks elsewhere
+        onClick={() => window.api.closeContextMenu()}
+        className="w-full bg-gray-700 min-h-screen pt-0.5"
+      >
         <ErrorBoundary FallbackComponent={null}>
           {tabs.map(({ icon, url, id }) => (
             <SidebarButton key={id} id={id} icon={icon} url={url} />

@@ -8,10 +8,13 @@ export class App {
 	public window: BrowserWindow
 	public leftBrowser: BrowserView
 	public rightBrowser: BrowserView
+	public contextMenu: BrowserView
+	public contextMenuId?: string
 	public activeUrl: string
 	public store: Store
 
 	constructor() {
+		this.store = new Store()
 		this.window = createWindow('main', {
 			width: 1000,
 			height: 600,
@@ -33,10 +36,27 @@ export class App {
 			height,
 		})
 		this.rightBrowser.webContents.loadURL(CONSTANTS.ADD_URL)
-		this.store = new Store()
 		this.setupListeners()
 		if (!CONSTANTS.isProd) {
 			this.setupDevtools()
+		}
+	}
+
+	public openContextMenu(id: string, bounds: Electron.Rectangle) {
+		this.contextMenuId = id
+		const contextMenu = this.addBrowser()
+		contextMenu.setBounds({ ...bounds, width: 80, height: 25 })
+		if (this.contextMenu) {
+			this.window.removeBrowserView(this.contextMenu)
+		}
+		this.contextMenu = contextMenu
+		this.contextMenu.webContents.loadURL(CONSTANTS.CONTEXT_MENU_URL)
+	}
+
+	public closeContextMenu() {
+		this.contextMenuId = undefined
+		if (this.contextMenu) {
+			this.window.removeBrowserView(this.contextMenu)
 		}
 	}
 
@@ -70,6 +90,7 @@ export class App {
 			})
 		})
 	}
+
 
 	private addBrowser(): BrowserView {
 		const browser = new BrowserView({

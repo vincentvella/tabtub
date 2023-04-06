@@ -4,8 +4,10 @@ import { CONSTANTS } from "../helpers/constants";
 import { App } from "./app";
 import { Tab } from "./store";
 
+type MessageBrokerHandlerKeys = keyof InstanceType<typeof MessageBroker>
+
 export class MessageBroker {
-	app: App
+	private app: App
 
 	constructor(app: App) {
 		this.app = app
@@ -14,27 +16,26 @@ export class MessageBroker {
 		app.rightBrowser.webContents.addListener('ipc-message', this.handleMessage)
 	}
 
+	private eventMap: Record<string, MessageBrokerHandlerKeys> = {
+		[ACTIONS.ADD_TAB]: 'addTab',
+		[ACTIONS.CHANGE_TAB]: 'handleTabChange',
+		[ACTIONS.CLOSE_CONTEXT_MENU]: 'closeContextMenu',
+		[ACTIONS.GET_CONTEXT_MENU]: 'getContextMenu',
+		[ACTIONS.OPEN_CONTEXT_MENU]: 'openContextMenu',
+		[ACTIONS.REMOVE_TAB]: 'removeTab',
+		[ACTIONS.REQUEST_TABS]: 'removeTab',
+	}
+
 	private handleMessage: (event: Electron.Event, channel: string, ...args: any[]) => void = (_event, channel, data) => {
-		switch (channel) {
-			case ACTIONS.CHANGE_TAB:
-				this.handleTabChange(data)
-				break;
-			case ACTIONS.ADD_TAB:
-				this.addTab(data)
-				break;
-			case ACTIONS.REQUEST_TABS:
-				this.handleTabsRequest()
-				break;
-			case ACTIONS.REMOVE_TAB:
-				this.removeTab(data)
-				break;
-			default:
-				console.log('UNHANDLED ACTION:', channel, data)
+		console.log('DISPATCHING', channel)
+		if (this.eventMap[channel]) {
+			this[this.eventMap[channel]](data)
+		} else {
+			console.log('UNHANDLED ACTION:', channel, data)
 		}
 	}
 
-	private handleTabChange(tab: string) {
-		console.log('Tab Change: ', tab)
+	public handleTabChange(tab: string) {
 		if (tab === 'add') {
 			// Special case to load the add page
 			if (tab !== this.app.activeUrl) {
@@ -47,15 +48,13 @@ export class MessageBroker {
 		}
 	}
 
-	private handleTabsRequest() {
-		console.log('Fetching Tabs From Storage')
+	public handleTabsRequest() {
 		const urls = this.app.store.tabStorage.getAll() || []
 		this.app.leftBrowser.webContents.send(CHANNELS.SIDEBAR, ACTIONS.REQUEST_TABS, urls)
 		return urls
 	}
 
-	private addTab(tab: Tab) {
-		console.log('Adding New Tab', tab)
+	public addTab(tab: Tab) {
 		const id = this.app.store.tabStorage.set(tab)
 		this.app.rightBrowser.webContents.send(CHANNELS.WINDOW, ACTIONS.ADD_TAB, id)
 		const tabs = this.app.store.tabStorage.getAll()
@@ -64,7 +63,7 @@ export class MessageBroker {
 		return id
 	}
 
-	private removeTab(id: string) {
+	public removeTab(id: string) {
 		// Get url for removed id
 		const activeTab = this.app.store.tabStorage.get(id).url
 		this.app.store.tabStorage.remove(id)
@@ -74,5 +73,23 @@ export class MessageBroker {
 		}
 		const tabs = this.app.store.tabStorage.getAll()
 		this.app.leftBrowser.webContents.send(CHANNELS.SIDEBAR, ACTIONS.SUBSCRIBE_TABS, tabs)
+	}
+
+	public openContextMenu({ id, bounds }: { id: string, bounds: Electron.Rectangle }) {
+		this.app.openContextMenu(id, bounds)
+		// To debug context menu
+		// this.app.contextMenu.webContents.openDevTools({ mode: 'detach' })
+		this.app.contextMenu.webContents.addListener('ipc-message', this.handleMessage)
+		this.app.rightBrowser.webContents.addListener('focus', () => this.closeContextMenu())
+	}
+
+	public closeContextMenu() {
+		this.app.contextMenu?.webContents.removeListener('ipc-message', this.handleMessage)
+		this.app.closeContextMenu()
+	}
+
+	public getContextMenu() {
+		this.app.contextMenu.webContents.send(CHANNELS.CONTEXT_MENU, ACTIONS.GET_CONTEXT_MENU, this.app.contextMenuId)
+		return this.app.contextMenuId
 	}
 }

@@ -26,6 +26,9 @@ export const ElectronApi = {
 	addTab: (tab: Tab) => resolver(CHANNELS.WINDOW, ACTIONS.ADD_TAB, tab),
 	changeTab: (id: string) => ipcRenderer.send(ACTIONS.CHANGE_TAB, id),
 	getTabs: () => resolver(CHANNELS.SIDEBAR, ACTIONS.REQUEST_TABS),
+	closeContextMenu: () => resolver(CHANNELS.SIDEBAR, ACTIONS.CLOSE_CONTEXT_MENU),
+	getContextMenu: () => resolver(CHANNELS.CONTEXT_MENU, ACTIONS.GET_CONTEXT_MENU),
+	openContextMenu: (id: string, bounds: Pick<Electron.Rectangle, 'x' | 'y'>) => resolver(CHANNELS.SIDEBAR, ACTIONS.OPEN_CONTEXT_MENU, { id, bounds }),
 	removeTab: (id: string) => resolver(CHANNELS.SIDEBAR, ACTIONS.REMOVE_TAB, id),
 	subscribeToTabs: (func: Callback) => {
 		const listener: Listener = (_event, type, data) => {
