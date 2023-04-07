@@ -1,7 +1,6 @@
 import { app as electron } from 'electron'
 import serve from 'electron-serve'
 import { App } from './entities/app'
-import Store from 'electron-store'
 import { MessageBroker } from './entities/message-broker'
 import { CONSTANTS } from './helpers/constants'
 
