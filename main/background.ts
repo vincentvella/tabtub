@@ -6,17 +6,17 @@ import { MessageBroker } from './entities/message-broker'
 import { CONSTANTS } from './helpers/constants'
 
 if (CONSTANTS.isProd) {
-	serve({ directory: 'app' })
+  serve({ directory: 'app' })
 } else {
-	electron.setPath('userData', `${electron.getPath('userData')} (development)`)
+  electron.setPath('userData', `${electron.getPath('userData')} (development)`)
 }
 
-; (async () => {
-	await electron.whenReady()
-	const app = new App()
-	new MessageBroker(app)
+;(async () => {
+  await electron.whenReady()
+  const app = new App()
+  new MessageBroker(app)
 })()
 
 electron.on('window-all-closed', () => {
-	electron.quit()
+  electron.quit()
 })

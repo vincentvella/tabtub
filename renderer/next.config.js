@@ -1,14 +1,14 @@
 module.exports = {
-  webpack: (config, { isServer }) => {
-    if (!isServer) {
-      config.target = 'electron-renderer';
-      config.node = {
-        __dirname: true,
-      };
-    }
+	webpack: (config, { isServer }) => {
+		if (!isServer) {
+			config.target = 'electron-renderer';
+			config.node = {
+				__dirname: true,
+			};
+		}
 
-    config.output.globalObject = 'this';
+		config.output.globalObject = 'this';
 
-    return config;
-  },
+		return config;
+	},
 };

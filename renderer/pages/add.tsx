@@ -1,7 +1,5 @@
 import React from 'react'
 import { z, ZodError } from 'zod'
-import { FaCalendarAlt, FaGithub } from 'react-icons/fa'
-import Gmail from '../icons/gmail'
 import Button, { ButtonProps } from '../components/button'
 
 const contents = new Map<string, ButtonProps>([

@@ -2,8 +2,8 @@ import * as Icons from 'react-icons/fa'
 import Gmail from './gmail'
 
 const AllIcons = {
-	...Icons,
-	Gmail,
+  ...Icons,
+  Gmail,
 }
 
 export type IconName = keyof typeof AllIcons
