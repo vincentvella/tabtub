@@ -4,15 +4,6 @@ import { CONSTANTS } from '../helpers/constants'
 import Store from './store'
 import { BrowserWindow } from './browser-window'
 
-// this.rightBrowser = this.addBrowser()
-// this.rightBrowser.setBounds({
-//   x: CONSTANTS.sidebarWidth,
-//   y: CONSTANTS.headerHeight,
-//   width: width - CONSTANTS.sidebarWidth,
-//   height: height - CONSTANTS.headerHeight,
-// })
-// this.rightBrowser.webContents.loadURL(CONSTANTS.ADD_URL)
-
 export class App {
   public window: BrowserWindow
   public addPage: BrowserView
