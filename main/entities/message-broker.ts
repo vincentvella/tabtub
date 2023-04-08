@@ -47,9 +47,8 @@ export class MessageBroker {
         this.app.show(this.app.addPage)
       }
     } else {
-      if (this.app.activeId === 'add') {
-        this.app.hide(this.app.addPage)
-      } else if (this.app.activeId !== 'add') {
+      this.app.hide(this.app.addPage)
+      if (this.app.activeId !== 'add') {
         // Hide the current browser excluding the add route
         this.app.hideBrowser(this.app.activeId)
       }
@@ -64,6 +63,7 @@ export class MessageBroker {
         this.app.rightBrowser.webContents.loadURL(url)
         this.app.show(this.app.rightBrowser)
       }
+      // this.app.rightBrowser.webContents.openDevTools({ mode: 'detach' })
       this.app.rightBrowser.webContents.addListener('focus', () => this.closeContextMenu())
     }
   }

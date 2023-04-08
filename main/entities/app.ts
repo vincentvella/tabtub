@@ -3,6 +3,7 @@ import { BrowserView } from 'electron'
 import { CONSTANTS } from '../helpers/constants'
 import Store from './store'
 import { BrowserWindow } from './browser-window'
+import { platformSelect } from '../helpers/platform'
 
 export class App {
   public window: BrowserWindow
@@ -34,8 +35,8 @@ export class App {
     this.addPage.setBounds({
       x: CONSTANTS.sidebarWidth,
       y: CONSTANTS.headerHeight,
-      width: width - CONSTANTS.sidebarWidth,
-      height: height - CONSTANTS.headerHeight,
+      width: width - CONSTANTS.sidebarWidth + CONSTANTS.extraWidth,
+      height: height - CONSTANTS.headerHeight + CONSTANTS.extraHeight,
     })
     this.addPage.webContents.loadURL(CONSTANTS.ADD_URL)
     this.setupListeners()
@@ -84,8 +85,14 @@ export class App {
       this.addPage.setBounds({
         x: CONSTANTS.sidebarWidth,
         y: CONSTANTS.headerHeight,
-        width: width - CONSTANTS.sidebarWidth,
-        height: height - CONSTANTS.headerHeight,
+        width: width - CONSTANTS.sidebarWidth + CONSTANTS.extraWidth,
+        height: height - CONSTANTS.headerHeight + CONSTANTS.extraHeight,
+      })
+      this.rightBrowser?.setBounds({
+        x: CONSTANTS.sidebarWidth,
+        y: CONSTANTS.headerHeight,
+        width: width - CONSTANTS.sidebarWidth + CONSTANTS.extraWidth,
+        height: height - CONSTANTS.headerHeight + CONSTANTS.extraHeight,
       })
       this.window.state = { ...this.window.state, width, height }
     })
@@ -112,8 +119,8 @@ export class App {
     browser.setBounds({
       x: CONSTANTS.sidebarWidth,
       y: CONSTANTS.headerHeight,
-      width: width - CONSTANTS.sidebarWidth,
-      height: height - CONSTANTS.headerHeight,
+      width: width - CONSTANTS.sidebarWidth + CONSTANTS.extraWidth,
+      height: height - CONSTANTS.headerHeight + CONSTANTS.extraHeight,
     })
   }
 
