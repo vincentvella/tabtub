@@ -2,7 +2,7 @@ import { BrowserWindow as ElectronBrowserWindow, BrowserWindowConstructorOptions
 import { screen } from 'electron'
 import ElectronStore from 'electron-store'
 
-type WindowDimensions = Pick<BrowserWindowConstructorOptions, 'x' | 'y' | 'width' | 'height'>
+export type WindowDimensions = Pick<BrowserWindowConstructorOptions, 'x' | 'y' | 'width' | 'height'>
 
 export class BrowserWindow {
   key: string = 'window-state'

@@ -8,7 +8,7 @@ export const CONSTANTS = {
   sidebarWidth: 56,
   isProd,
   PORT,
-  SIDEBAR_URL: url('sidebar'),
   ADD_URL: url('add'),
   CONTEXT_MENU_URL: url('context-menu'),
+  SIDEBAR_URL: url('sidebar'),
 }
