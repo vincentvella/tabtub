@@ -60,6 +60,8 @@ export class MessageBroker {
         const url = this.app.store.tabStorage.get(this.app.activeId).url
         this.app.rightBrowser.webContents.loadURL(url)
         this.app.show(this.app.rightBrowser)
+        const profile = this.app.store.profileStorage.getByTabId(this.app.activeId)[0]
+        this.app.activeTabState.set(this.app.activeId, profile.id)
       }
       // this.app.rightBrowser.webContents.openDevTools({ mode: 'detach' })
       this.app.rightBrowser.webContents.addListener('focus', () => this.closeContextMenu())
@@ -68,6 +70,11 @@ export class MessageBroker {
       CHANNELS.APPLICATION,
       ACTIONS.SUBSCRIBE_ACTIVE_TAB,
       this.app.activeId
+    )
+    this.app.application.webContents.send(
+      CHANNELS.APPLICATION,
+      ACTIONS.SUBSCRIBE_ACTIVE_PROFILE,
+      this.app.activeTabState.get(this.app.activeId)
     )
   }
 

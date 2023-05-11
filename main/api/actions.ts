@@ -8,6 +8,7 @@ export const ACTIONS = {
   REQUEST_TABS: 'request-tabs',
   REQUEST_PROFILES: 'request-profiles',
   SUBSCRIBE_ACTIVE_TAB: 'subscribe-active-tab',
+  SUBSCRIBE_ACTIVE_PROFILE: 'subscribe-active-profile',
   SUBSCRIBE_PROFILES: 'subscribe-profiles',
   SUBSCRIBE_TABS: 'subscribe-tabs',
 }

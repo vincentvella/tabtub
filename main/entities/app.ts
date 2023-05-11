@@ -3,16 +3,16 @@ import { BrowserView } from 'electron'
 import { CONSTANTS } from '../helpers/constants'
 import Store from './store'
 import { BrowserWindow } from './browser-window'
-import { platformSelect } from '../helpers/platform'
 
 export class App {
   public window: BrowserWindow
   public application: BrowserView
   public rightBrowser: BrowserView
-  public inactiveBrowsers: Record<string, BrowserView> = {}
+  public inactiveBrowsers = new Map<string, BrowserView>()
   public contextMenu: BrowserView
   public contextMenuId?: string
   public activeId: string = 'add' // Add id by default
+  public activeTabState = new Map<string, string>()
   public store: Store
 
   constructor() {
@@ -120,15 +120,15 @@ export class App {
   }
 
   public hideBrowser(id: string) {
-    this.inactiveBrowsers[id] = this.rightBrowser
+    this.inactiveBrowsers.set(id, this.rightBrowser)
     // Move to a hidden position
-    this.hide(this.inactiveBrowsers[id])
+    this.hide(this.inactiveBrowsers.get(id))
   }
 
   public maybeResumeBrowser(id: string): boolean {
-    if (this.inactiveBrowsers[id]) {
-      this.show(this.inactiveBrowsers[id])
-      this.rightBrowser = this.inactiveBrowsers[id]
+    if (this.inactiveBrowsers.get(id)) {
+      this.show(this.inactiveBrowsers.get(id))
+      this.rightBrowser = this.inactiveBrowsers.get(id)
       return true
     }
     return false
