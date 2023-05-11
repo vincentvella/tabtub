@@ -9,10 +9,10 @@ export const CONSTANTS = {
   headerHeight: platformSelect({ mac: 28, windows: 0, linux: 0 }),
   extraHeight: platformSelect({ windows: -58, mac: 0, linux: 0 }),
   extraWidth: platformSelect({ windows: -16, mac: 0, linux: 0 }),
+  profileSelectorHeight: 32,
   sidebarWidth: 56,
   isProd,
   PORT,
-  ADD_URL: url('add'),
+  APPLICATION_URL: url('application'),
   CONTEXT_MENU_URL: url('context-menu'),
-  SIDEBAR_URL: url('sidebar'),
 }

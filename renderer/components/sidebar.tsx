@@ -1,7 +1,8 @@
 import React from 'react'
 import { ErrorBoundary } from 'react-error-boundary'
-import Chip from '../components/chip'
+import Chip from './chip'
 import AllIcons, { IconName } from '../icons'
+import { useTabs } from '../hooks/useTabs'
 
 type Tab = {
   id: string
@@ -34,27 +35,14 @@ const SidebarButton = (props: Tab) => {
 const AddTab: Tab = { id: 'add', icon: 'FaPlus', url: 'add' }
 
 function Sidebar() {
-  const [tabs, setTabs] = React.useState<Tab[]>([AddTab])
-
-  React.useEffect(() => {
-    // Get Tabs from Electron
-    window?.api.getTabs().then((data: Tab[]) => {
-      setTabs([AddTab, ...data])
-    })
-  }, [])
-
-  React.useEffect(() => {
-    window?.api.subscribeToTabs((data) => {
-      setTabs([AddTab, ...data])
-    })
-  }, [])
+  const tabs = useTabs()
 
   return (
     <React.Fragment>
       <div
         // Close context menu if user clicks elsewhere
         onClick={() => window.api.closeContextMenu()}
-        className="w-full bg-gray-700 min-h-screen pt-0.5"
+        className="w-14 bg-gray-700 min-h-screen pt-0.5"
       >
         <ErrorBoundary FallbackComponent={null}>
           {tabs.map(({ icon, url, id }) => (

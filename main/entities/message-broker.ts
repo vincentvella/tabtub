@@ -11,8 +11,7 @@ export class MessageBroker {
   constructor(app: App) {
     this.app = app
     // When sidebar sends a message to the main process, we reload the right view
-    app.addPage.webContents.addListener('ipc-message', this.handleMessage)
-    app.sidebar.webContents.addListener('ipc-message', this.handleMessage)
+    app.application.webContents.addListener('ipc-message', this.handleMessage)
     // app.rightBrowser.webContents.addListener('ipc-message', this.handleMessage)
   }
 
@@ -24,6 +23,7 @@ export class MessageBroker {
     [ACTIONS.OPEN_CONTEXT_MENU]: 'openContextMenu',
     [ACTIONS.REMOVE_TAB]: 'removeTab',
     [ACTIONS.REQUEST_TABS]: 'handleTabsRequest',
+    [ACTIONS.REQUEST_PROFILES]: 'handleProfilesRequest',
   }
 
   private handleMessage: (event: Electron.Event, channel: string, ...args: any[]) => void = (
@@ -44,10 +44,8 @@ export class MessageBroker {
       this.app.hide(this.app.rightBrowser)
       if (id !== this.app.activeId) {
         this.app.activeId = id
-        this.app.show(this.app.addPage)
       }
     } else {
-      this.app.hide(this.app.addPage)
       if (this.app.activeId !== 'add') {
         // Hide the current browser excluding the add route
         this.app.hideBrowser(this.app.activeId)
@@ -70,15 +68,21 @@ export class MessageBroker {
 
   public handleTabsRequest() {
     const urls = this.app.store.tabStorage.getAll() || []
-    this.app.sidebar.webContents.send(CHANNELS.SIDEBAR, ACTIONS.REQUEST_TABS, urls)
+    this.app.application.webContents.send(CHANNELS.APPLICATION, ACTIONS.REQUEST_TABS, urls)
     return urls
+  }
+
+  public handleProfilesRequest() {
+    const profiles = this.app.store.profileStorage.getAll() || []
+    this.app.application.webContents.send(CHANNELS.APPLICATION, ACTIONS.REQUEST_PROFILES, profiles)
+    return profiles
   }
 
   public addTab(tab: Tab) {
     const id = this.app.store.tabStorage.set(tab)
-    this.app.addPage.webContents.send(CHANNELS.WINDOW, ACTIONS.ADD_TAB, id)
+    this.app.application.webContents.send(CHANNELS.WINDOW, ACTIONS.ADD_TAB, id)
     const tabs = this.app.store.tabStorage.getAll()
-    this.app.sidebar.webContents.send(CHANNELS.SIDEBAR, ACTIONS.SUBSCRIBE_TABS, tabs)
+    this.app.application.webContents.send(CHANNELS.APPLICATION, ACTIONS.SUBSCRIBE_TABS, tabs)
     this.handleTabChange(id)
     return id
   }
@@ -91,7 +95,7 @@ export class MessageBroker {
       this.handleTabChange('add')
     }
     const tabs = this.app.store.tabStorage.getAll()
-    this.app.sidebar.webContents.send(CHANNELS.SIDEBAR, ACTIONS.SUBSCRIBE_TABS, tabs)
+    this.app.application.webContents.send(CHANNELS.APPLICATION, ACTIONS.SUBSCRIBE_TABS, tabs)
   }
 
   public openContextMenu({ id, bounds }: { id: string; bounds: Electron.Rectangle }) {
@@ -100,7 +104,7 @@ export class MessageBroker {
     // this.app.contextMenu.webContents.openDevTools({ mode: 'detach' })
     this.app.contextMenu.webContents.addListener('ipc-message', this.handleMessage)
     this.app.contextMenu.webContents.focus()
-    this.app.addPage.webContents.addListener('focus', () => this.closeContextMenu())
+    this.app.application.webContents.addListener('focus', () => this.closeContextMenu())
   }
 
   public closeContextMenu() {

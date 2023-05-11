@@ -7,8 +7,7 @@ import { platformSelect } from '../helpers/platform'
 
 export class App {
   public window: BrowserWindow
-  public addPage: BrowserView
-  public sidebar: BrowserView
+  public application: BrowserView
   public rightBrowser: BrowserView
   public inactiveBrowsers: Record<string, BrowserView> = {}
   public contextMenu: BrowserView
@@ -23,22 +22,14 @@ export class App {
       height: 600,
     })
     const [width, height] = this.window.self.getSize()
-    this.sidebar = this.addBrowser()
-    this.sidebar.setBounds({
+    this.application = this.addBrowser()
+    this.application.setBounds({
       x: 0,
       y: CONSTANTS.headerHeight,
-      width: CONSTANTS.sidebarWidth,
+      width,
       height: height - CONSTANTS.headerHeight,
     })
-    this.sidebar.webContents.loadURL(CONSTANTS.SIDEBAR_URL)
-    this.addPage = this.addBrowser()
-    this.addPage.setBounds({
-      x: CONSTANTS.sidebarWidth,
-      y: CONSTANTS.headerHeight,
-      width: width - CONSTANTS.sidebarWidth + CONSTANTS.extraWidth,
-      height: height - CONSTANTS.headerHeight + CONSTANTS.extraHeight,
-    })
-    this.addPage.webContents.loadURL(CONSTANTS.ADD_URL)
+    this.application.webContents.loadURL(CONSTANTS.APPLICATION_URL)
     this.setupListeners()
     if (!CONSTANTS.isProd) {
       this.setupDevtools()
@@ -64,36 +55,34 @@ export class App {
   }
 
   private setupDevtools() {
-    this.sidebar.webContents.openDevTools({ mode: 'detach' })
-    this.addPage.webContents.openDevTools({ mode: 'detach' })
-    this.sidebar.webContents.on('devtools-reload-page', (_event, _dirty, _image) => {
+    this.application.webContents.openDevTools({ mode: 'detach' })
+    this.application.webContents.on('devtools-reload-page', (_event, _dirty, _image) => {
       console.log('RELOAD')
-      this.sidebar.webContents.reload()
-      this.addPage.webContents.reload()
+      this.application.webContents.reload()
     })
   }
 
   private setupListeners() {
     this.window.self.on('resize', () => {
       const [width, height] = this.window.self.getSize()
-      this.sidebar.setBounds({
+      this.application.setBounds({
         x: 0,
         y: CONSTANTS.headerHeight,
-        width: CONSTANTS.sidebarWidth,
+        width,
         height: height - CONSTANTS.headerHeight,
       })
-      this.addPage.setBounds({
-        x: CONSTANTS.sidebarWidth,
-        y: CONSTANTS.headerHeight,
-        width: width - CONSTANTS.sidebarWidth + CONSTANTS.extraWidth,
-        height: height - CONSTANTS.headerHeight + CONSTANTS.extraHeight,
-      })
-      this.rightBrowser?.setBounds({
-        x: CONSTANTS.sidebarWidth,
-        y: CONSTANTS.headerHeight,
-        width: width - CONSTANTS.sidebarWidth + CONSTANTS.extraWidth,
-        height: height - CONSTANTS.headerHeight + CONSTANTS.extraHeight,
-      })
+      if (this.activeId !== 'add') {
+        this.rightBrowser?.setBounds({
+          x: CONSTANTS.sidebarWidth,
+          y: CONSTANTS.headerHeight + CONSTANTS.profileSelectorHeight,
+          width: width - CONSTANTS.sidebarWidth + CONSTANTS.extraWidth,
+          height:
+            height -
+            CONSTANTS.headerHeight +
+            CONSTANTS.extraHeight -
+            CONSTANTS.profileSelectorHeight,
+        })
+      }
       this.window.state = { ...this.window.state, width, height }
     })
   }
@@ -116,11 +105,17 @@ export class App {
 
   public show(browser: BrowserView) {
     const { width, height } = this.window.state
+    let newHeight = height - CONSTANTS.headerHeight + CONSTANTS.extraHeight
+    let y = CONSTANTS.headerHeight
+    if (browser !== this.application) {
+      newHeight = newHeight + CONSTANTS.profileSelectorHeight
+      y = y + CONSTANTS.profileSelectorHeight
+    }
     browser.setBounds({
       x: CONSTANTS.sidebarWidth,
-      y: CONSTANTS.headerHeight,
+      y,
       width: width - CONSTANTS.sidebarWidth + CONSTANTS.extraWidth,
-      height: height - CONSTANTS.headerHeight + CONSTANTS.extraHeight,
+      height: newHeight,
     })
   }
 

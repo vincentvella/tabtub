@@ -49,7 +49,7 @@ const TabCreator = () => {
   )
 }
 
-function AppStore() {
+function AddPage() {
   const sidebarContents = React.useMemo(() => contents, [])
   return (
     <div className="pl-4 pr-4">
@@ -70,4 +70,4 @@ function AppStore() {
   )
 }
 
-export default AppStore
+export default AddPage
