@@ -19,14 +19,34 @@ function ProfileSelector() {
         <ErrorBoundary FallbackComponent={null}>
           <div className="flex flex-row">
             {profiles.map((profile: Profile) => (
-              <div key={profile.id} className="h-full flex items-center">
+              <button
+                onClick={() => {
+                  window?.api.changeProfile(profile.id)
+                }}
+                key={profile.id}
+                className="h-full flex items-center"
+              >
                 <div className="hover:bg-gray-600">
                   <div className="pt-1 pb-1 pr-2 pl-2">
                     <span>{profile.name}</span>
                   </div>
                 </div>
-              </div>
+              </button>
             ))}
+            <div>
+              <button
+                onClick={() => {
+                  window?.api.addProfile()
+                }}
+                className="h-full flex items-center"
+              >
+                <div className="hover:bg-gray-600">
+                  <div className="pt-1 pb-1 pr-2 pl-2">
+                    <span>+</span>
+                  </div>
+                </div>
+              </button>
+            </div>
           </div>
         </ErrorBoundary>
       </div>

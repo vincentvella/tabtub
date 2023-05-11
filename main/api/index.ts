@@ -33,7 +33,9 @@ export type Api = typeof ElectronApi
 
 export const ElectronApi = {
   addTab: (tab: Omit<Tab, 'id'>) => resolver(CHANNELS.WINDOW, ACTIONS.ADD_TAB, tab),
+  addProfile: () => resolver(CHANNELS.APPLICATION, ACTIONS.ADD_PROFILE),
   changeTab: (id: string) => ipcRenderer.send(ACTIONS.CHANGE_TAB, id),
+  changeProfile: (id: string) => ipcRenderer.send(ACTIONS.CHANGE_PROFILE, id),
   getTabs: () => resolver(CHANNELS.APPLICATION, ACTIONS.REQUEST_TABS),
   getProfiles: (activeTabId: string) =>
     resolver(CHANNELS.APPLICATION, ACTIONS.REQUEST_PROFILES, activeTabId),
@@ -45,6 +47,14 @@ export const ElectronApi = {
   subscribeToActiveTab: (func: Callback) => {
     const listener: Listener = (_event, type, data) => {
       if (type === ACTIONS.SUBSCRIBE_ACTIVE_TAB) {
+        func(data)
+      }
+    }
+    ipcRenderer.on(CHANNELS.APPLICATION, listener)
+  },
+  subscribeToActiveProfile: (func: Callback) => {
+    const listener: Listener = (_event, type, data) => {
+      if (type === ACTIONS.SUBSCRIBE_ACTIVE_PROFILE) {
         func(data)
       }
     }

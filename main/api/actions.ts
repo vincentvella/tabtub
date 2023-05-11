@@ -1,6 +1,8 @@
 export const ACTIONS = {
   ADD_TAB: 'add-tab',
+  ADD_PROFILE: 'add-profile',
   CHANGE_TAB: 'change-tab',
+  CHANGE_PROFILE: 'change-profile',
   CLOSE_CONTEXT_MENU: 'close-menu',
   GET_CONTEXT_MENU: 'context-menu',
   OPEN_CONTEXT_MENU: 'open-menu',

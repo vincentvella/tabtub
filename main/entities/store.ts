@@ -10,7 +10,7 @@ class Store {
 
   addTab(tab: Tab) {
     const id = this.tabStorage.set(tab)
-    const profile = this.profileStorage.set({ name: 'Default', tabId: id, id: uuid() })
+    const profile = this.profileStorage.set({ name: 'Default', tabId: id })
     return { id, profile }
   }
 
@@ -60,7 +60,7 @@ export type Profile = {
 class ProfileStorage {
   store = new Slice<Record<string, Profile>>({ name: 'profiles' })
 
-  set({ name, tabId }: Profile) {
+  set({ name, tabId }: Omit<Profile, 'id'>) {
     const id = uuid()
     this.store.set(id, { name, tabId })
     return id

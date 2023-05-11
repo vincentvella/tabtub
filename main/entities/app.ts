@@ -1,5 +1,5 @@
 import path from 'path'
-import { BrowserView } from 'electron'
+import { BrowserView, session } from 'electron'
 import { CONSTANTS } from '../helpers/constants'
 import Store from './store'
 import { BrowserWindow } from './browser-window'
@@ -22,7 +22,7 @@ export class App {
       height: 600,
     })
     const [width, height] = this.window.self.getSize()
-    this.application = this.addBrowser()
+    this.application = this.addBrowser('application')
     this.application.setBounds({
       x: 0,
       y: CONSTANTS.headerHeight,
@@ -38,7 +38,7 @@ export class App {
 
   public openContextMenu(id: string, bounds: Electron.Rectangle) {
     this.contextMenuId = id
-    const contextMenu = this.addBrowser()
+    const contextMenu = this.addBrowser('context-menu')
     contextMenu.setBounds({ ...bounds, width: 80, height: 25 })
     if (this.contextMenu) {
       this.window.self.removeBrowserView(this.contextMenu)
@@ -87,9 +87,10 @@ export class App {
     })
   }
 
-  public addBrowser(): BrowserView {
+  public addBrowser(id: string): BrowserView {
     const browser = new BrowserView({
       webPreferences: {
+        session: session.fromPartition(id),
         preload: path.join(path.resolve(__dirname, '../app', 'preload.js')),
       },
     })
