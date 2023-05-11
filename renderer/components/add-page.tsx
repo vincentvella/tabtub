@@ -1,6 +1,7 @@
 import React from 'react'
 import { z, ZodError } from 'zod'
 import Button, { ButtonProps } from '../components/button'
+import { useActiveId } from '../context/active-id-context'
 
 const contents = new Map<string, ButtonProps>([
   ['github', { icon: 'FaGithub', link: 'https://github.com' }],
@@ -50,7 +51,14 @@ const TabCreator = () => {
 }
 
 function AddPage() {
+  const activeId = useActiveId()
   const sidebarContents = React.useMemo(() => contents, [])
+
+  if (activeId !== 'add') {
+    // This page should only be rendered when the activeId is 'add'
+    return null
+  }
+
   return (
     <div className="pl-4 pr-4">
       <h1 className="text-3xl text-center pt-4 pb-4">Customize</h1>

@@ -64,6 +64,11 @@ export class MessageBroker {
       // this.app.rightBrowser.webContents.openDevTools({ mode: 'detach' })
       this.app.rightBrowser.webContents.addListener('focus', () => this.closeContextMenu())
     }
+    this.app.application.webContents.send(
+      CHANNELS.APPLICATION,
+      ACTIONS.SUBSCRIBE_ACTIVE_TAB,
+      this.app.activeId
+    )
   }
 
   public handleTabsRequest() {

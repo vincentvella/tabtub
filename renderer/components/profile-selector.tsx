@@ -1,6 +1,7 @@
 import React from 'react'
 import { ErrorBoundary } from 'react-error-boundary'
 import { Profile } from '../../main/entities/store'
+import { useActiveId } from '../context/active-id-context'
 
 function ProfileSelector() {
   const [profiles, setProfiles] = React.useState([])
@@ -17,6 +18,13 @@ function ProfileSelector() {
     //   setProfiles(data)
     // })
   }, [])
+
+  const activeId = useActiveId()
+
+  if (activeId === 'add') {
+    // This page should only be rendered when the activeId is 'add'
+    return null
+  }
 
   return (
     <React.Fragment>
