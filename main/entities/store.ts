@@ -7,6 +7,17 @@ class Store {
   constructor() {
     // Hydrate from storage
   }
+
+  addTab(tab: Tab) {
+    const id = this.tabStorage.set(tab)
+    const profile = this.profileStorage.set({ name: 'Default', tabId: id, id: uuid() })
+    return { id, profile }
+  }
+
+  removeTab(id: string) {
+    this.tabStorage.remove(id)
+    this.profileStorage.removeByTabId(id)
+  }
 }
 
 export type Tab = {
@@ -16,7 +27,7 @@ export type Tab = {
 }
 
 class TabStorage {
-  store = new Slice<Record<string, Tab>>()
+  store = new Slice<Record<string, Tab>>({ name: 'tabs' })
 
   set({ url, icon }: Omit<Tab, 'id'>) {
     const id = uuid()
@@ -25,7 +36,7 @@ class TabStorage {
   }
 
   get(id: string): Tab {
-    return {...this.store.get(id), id}
+    return { ...this.store.get(id), id }
   }
 
   remove(id: string) {
@@ -41,21 +52,22 @@ class TabStorage {
 }
 
 export type Profile = {
-  tab: string
+  id: string // pk
+  tabId: string // fk
   name: string
 }
 
 class ProfileStorage {
-  store = new Slice<Record<string, Profile>>()
+  store = new Slice<Record<string, Profile>>({ name: 'profiles' })
 
-  set({ name, tab }: Profile) {
+  set({ name, tabId }: Profile) {
     const id = uuid()
-    this.store.set(id, { name, tab })
+    this.store.set(id, { name, tabId })
     return id
   }
 
   get(id: string): Profile {
-    return this.store.get(id)
+    return { ...this.store.get(id), id }
   }
 
   remove(id: string) {
@@ -67,6 +79,23 @@ class ProfileStorage {
       id: key,
       ...value,
     }))
+  }
+
+  getByTabId(tabId: string) {
+    return Object.entries(this.store.store as Record<string, Profile>)
+      .map(([key, value]) => ({
+        id: key,
+        ...value,
+      }))
+      .filter((profile) => profile.tabId === tabId)
+  }
+
+  removeByTabId(tabId: string) {
+    this.getByTabId(tabId).forEach((profile) => this.remove(profile.id))
+  }
+
+  removeAll() {
+    Object.keys(this.store.store).forEach((key) => this.remove(key))
   }
 }
 

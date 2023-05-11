@@ -35,7 +35,8 @@ export const ElectronApi = {
   addTab: (tab: Omit<Tab, 'id'>) => resolver(CHANNELS.WINDOW, ACTIONS.ADD_TAB, tab),
   changeTab: (id: string) => ipcRenderer.send(ACTIONS.CHANGE_TAB, id),
   getTabs: () => resolver(CHANNELS.APPLICATION, ACTIONS.REQUEST_TABS),
-  getProfiles: () => resolver(CHANNELS.APPLICATION, ACTIONS.REQUEST_PROFILES),
+  getProfiles: (activeTabId: string) =>
+    resolver(CHANNELS.APPLICATION, ACTIONS.REQUEST_PROFILES, activeTabId),
   closeContextMenu: () => resolver(CHANNELS.APPLICATION, ACTIONS.CLOSE_CONTEXT_MENU),
   getContextMenu: () => resolver(CHANNELS.CONTEXT_MENU, ACTIONS.GET_CONTEXT_MENU),
   openContextMenu: (id: string, bounds: Pick<Electron.Rectangle, 'x' | 'y'>) =>

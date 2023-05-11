@@ -77,24 +77,30 @@ export class MessageBroker {
     return urls
   }
 
-  public handleProfilesRequest() {
-    const profiles = this.app.store.profileStorage.getAll() || []
+  public handleProfilesRequest(activeTab: string) {
+    const profiles = this.app.store.profileStorage.getByTabId(activeTab) || []
     this.app.application.webContents.send(CHANNELS.APPLICATION, ACTIONS.REQUEST_PROFILES, profiles)
     return profiles
   }
 
   public addTab(tab: Tab) {
-    const id = this.app.store.tabStorage.set(tab)
+    const { id, profile } = this.app.store.addTab(tab)
     this.app.application.webContents.send(CHANNELS.WINDOW, ACTIONS.ADD_TAB, id)
     const tabs = this.app.store.tabStorage.getAll()
     this.app.application.webContents.send(CHANNELS.APPLICATION, ACTIONS.SUBSCRIBE_TABS, tabs)
+    const profiles = this.app.store.profileStorage.getAll()
+    this.app.application.webContents.send(
+      CHANNELS.APPLICATION,
+      ACTIONS.SUBSCRIBE_PROFILES,
+      profiles
+    )
     this.handleTabChange(id)
     return id
   }
 
   public removeTab(id: string) {
     // Get url for removed id
-    this.app.store.tabStorage.remove(id)
+    this.app.store.removeTab(id)
     // If deleted url is the same as active... navigate the user to the add screen
     if (this.app.activeId === id) {
       this.handleTabChange('add')
