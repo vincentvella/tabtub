@@ -3,6 +3,7 @@ import { ErrorBoundary } from 'react-error-boundary'
 import Chip from './chip'
 import AllIcons, { IconName } from '../icons'
 import { useTabs } from '../hooks/useTabs'
+import { useActiveId } from '../context/active-id-context'
 
 type Tab = {
   id: string
@@ -12,7 +13,12 @@ type Tab = {
 
 const SidebarButton = (props: Tab) => {
   const { icon, id } = props
-  const callback = React.useCallback(() => window.api.changeTab(id), [id])
+  const activeId = useActiveId()
+  const callback = React.useCallback(() => {
+    if (id !== activeId) {
+      window.api.changeTab(id)
+    }
+  }, [id, activeId])
   const removeIcon = React.useCallback<React.MouseEventHandler<HTMLButtonElement>>((e) => {
     const element = e.target as HTMLElement
     const position = element.getBoundingClientRect()

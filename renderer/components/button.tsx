@@ -13,11 +13,7 @@ const Button: React.FC<ButtonProps> = ({ icon, link, text }) => {
     window.api.addTab({ icon, url: link })
   }
   return (
-    <button
-      className="flex rounded-xl bg-indigo-900"
-      onClick={callback}
-      onAuxClick={() => console.log('hello')}
-    >
+    <button className="flex rounded-xl bg-indigo-900" onClick={callback}>
       <Chip Icon={AllIcons[icon]} />
       {!!text && <span className="self-center">{text}</span>}
     </button>

@@ -4,7 +4,6 @@ const ActiveIdContext = React.createContext<string>(undefined)
 
 export const ActiveIdProvider = ({ children }: { children: React.ReactNode }) => {
   const [activeId, setActiveId] = React.useState<string>('add')
-
   React.useEffect(() => {
     window?.api.subscribeToActiveTab((data) => {
       setActiveId(data)
