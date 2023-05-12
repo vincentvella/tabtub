@@ -6,7 +6,13 @@ import { useActiveId } from '../context/active-id-context'
 const contents = new Map<string, ButtonProps>([
   ['github', { icon: 'FaGithub', link: 'https://github.com' }],
   ['mail', { icon: 'Gmail', link: 'https://mail.google.com' }],
-  ['calendar', { icon: 'FaCalendarAlt', link: 'https://calendar.google.com' }],
+  [
+    'calendar',
+    {
+      icon: 'FaCalendarAlt',
+      link: 'https://accounts.google.com/v3/signin/identifier?dsh=S1611624178:1665765818620%20318&continue=https://calendar.google.com/calendar/r&followup=https://calendar.google.com/calendar/r&osid=1&passive=1209600&service=cl&flowName=GlifWebSignIn&flowEntry=ServiceLogin&ifkv=AQDHYWrL2lk0_Bcr1n1Y-f-i1sNZRKJK8CNisliX9rpozkqKhY2Jby8gsVZ_wDz_oHqiWmN6uZ6s6g',
+    },
+  ],
 ])
 
 const url = z.string().url().min(1)

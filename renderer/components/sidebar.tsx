@@ -32,8 +32,6 @@ const SidebarButton = (props: Tab) => {
   )
 }
 
-const AddTab: Tab = { id: 'add', icon: 'FaPlus', url: 'add' }
-
 function Sidebar() {
   const tabs = useTabs()
 
