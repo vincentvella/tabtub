@@ -42,10 +42,14 @@ export const ElectronApi = {
   updateProfile: (id: string, name: string) =>
     resolver(CHANNELS.APPLICATION, ACTIONS.UPDATE_PROFILE, { id, name }),
   removeTab: (id: string) => resolver(CHANNELS.APPLICATION, ACTIONS.REMOVE_TAB, id),
+  removeProfile: (id: string) => resolver(CHANNELS.APPLICATION, ACTIONS.REMOVE_PROFILE, id),
   closeContextMenu: () => resolver(CHANNELS.APPLICATION, ACTIONS.CLOSE_CONTEXT_MENU),
   getContextMenu: () => resolver(CHANNELS.CONTEXT_MENU, ACTIONS.GET_CONTEXT_MENU),
-  openContextMenu: (id: string, bounds: Pick<Electron.Rectangle, 'x' | 'y'>) =>
-    resolver(CHANNELS.APPLICATION, ACTIONS.OPEN_CONTEXT_MENU, { id, bounds }),
+  openContextMenu: (
+    id: string,
+    type: 'tab' | 'profile',
+    bounds: Pick<Electron.Rectangle, 'x' | 'y'>
+  ) => resolver(CHANNELS.APPLICATION, ACTIONS.OPEN_CONTEXT_MENU, { id, bounds, type }),
   subscribeToActiveTab: (func: Callback) => {
     const listener: Listener = (_event, type, data) => {
       if (type === ACTIONS.SUBSCRIBE_ACTIVE_TAB) {

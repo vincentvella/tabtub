@@ -7,6 +7,7 @@ export const ACTIONS = {
   GET_CONTEXT_MENU: 'context-menu',
   OPEN_CONTEXT_MENU: 'open-menu',
   REMOVE_TAB: 'remove-tab',
+  REMOVE_PROFILE: 'remove-profile',
   REQUEST_TABS: 'request-tabs',
   REQUEST_PROFILES: 'request-profiles',
   SUBSCRIBE_ACTIVE_TAB: 'subscribe-active-tab',

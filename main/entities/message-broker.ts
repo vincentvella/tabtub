@@ -24,6 +24,7 @@ export class MessageBroker {
     [ACTIONS.GET_CONTEXT_MENU]: 'getContextMenu',
     [ACTIONS.OPEN_CONTEXT_MENU]: 'openContextMenu',
     [ACTIONS.REMOVE_TAB]: 'removeTab',
+    [ACTIONS.REMOVE_PROFILE]: 'removeProfile',
     [ACTIONS.REQUEST_TABS]: 'handleTabsRequest',
     [ACTIONS.REQUEST_PROFILES]: 'handleProfilesRequest',
     [ACTIONS.UPDATE_PROFILE]: 'updateProfile',
@@ -180,8 +181,33 @@ export class MessageBroker {
     this.app.application.webContents.send(CHANNELS.APPLICATION, ACTIONS.SUBSCRIBE_TABS, tabs)
   }
 
-  public openContextMenu({ id, bounds }: { id: string; bounds: Electron.Rectangle }) {
-    this.app.openContextMenu(id, bounds)
+  public removeProfile(id: string) {
+    const prevProfiles = this.app.store.profileStorage.getByTabId(this.app.activeId)
+    if (prevProfiles.length === 1) {
+      this.removeTab(this.app.activeId)
+    } else {
+      const nextProfile = prevProfiles.find((p) => p.id !== id)
+      this.app.store.profileStorage.remove(id)
+      const profiles = this.app.store.profileStorage.getByTabId(this.app.activeId)
+      this.handleProfileChange(nextProfile.id)
+      this.app.application.webContents.send(
+        CHANNELS.APPLICATION,
+        ACTIONS.SUBSCRIBE_PROFILES,
+        profiles
+      )
+    }
+  }
+
+  public openContextMenu({
+    id,
+    type,
+    bounds,
+  }: {
+    id: string
+    type: 'tab' | 'profile'
+    bounds: Electron.Rectangle
+  }) {
+    this.app.openContextMenu(id, type, bounds)
     // To debug context menu
     // this.app.contextMenu.webContents.openDevTools({ mode: 'detach' })
     this.app.contextMenu.webContents.addListener('ipc-message', this.handleMessage)
@@ -198,8 +224,8 @@ export class MessageBroker {
     this.app.contextMenu.webContents.send(
       CHANNELS.CONTEXT_MENU,
       ACTIONS.GET_CONTEXT_MENU,
-      this.app.contextMenuId
+      this.app.contextMenuInfo
     )
-    return this.app.contextMenuId
+    return this.app.contextMenuInfo
   }
 }

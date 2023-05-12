@@ -10,7 +10,7 @@ export class App {
   public rightBrowser: BrowserView
   public inactiveBrowsers = new Map<string, BrowserView>()
   public contextMenu: BrowserView
-  public contextMenuId?: string
+  public contextMenuInfo?: { id: string; type: 'tab' | 'profile' }
   public activeId: string = 'add' // Add id by default
   public activeTabState = new Map<string, string>()
   public store: Store
@@ -36,10 +36,11 @@ export class App {
     }
   }
 
-  public openContextMenu(id: string, bounds: Electron.Rectangle) {
-    this.contextMenuId = id
+  public openContextMenu(id: string, type: 'tab' | 'profile', bounds: Electron.Rectangle) {
+    const { x, y } = bounds
+    this.contextMenuInfo = { id, type }
     const contextMenu = this.addBrowser('context-menu')
-    contextMenu.setBounds({ ...bounds, width: 80, height: 25 })
+    contextMenu.setBounds({ x: Math.floor(x), y: Math.floor(y), width: 80, height: 25 })
     if (this.contextMenu) {
       this.window.self.removeBrowserView(this.contextMenu)
     }
@@ -48,7 +49,7 @@ export class App {
   }
 
   public closeContextMenu() {
-    this.contextMenuId = undefined
+    this.contextMenuInfo = undefined
     if (this.contextMenu) {
       this.window.self.removeBrowserView(this.contextMenu)
     }

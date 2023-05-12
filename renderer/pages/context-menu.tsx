@@ -1,11 +1,16 @@
 import React from 'react'
 
+type ContextMenuProps = {
+  id: string
+  type: 'tab' | 'profile'
+}
+
 function ContextMenu() {
-  const [id, setId] = React.useState<string | undefined>()
+  const [context, setContext] = React.useState<ContextMenuProps | undefined>()
 
   React.useEffect(() => {
-    window?.api.getContextMenu().then((data: string) => {
-      setId(data)
+    window?.api.getContextMenu().then((data: ContextMenuProps) => {
+      setContext(data)
     })
   }, [])
 
@@ -14,7 +19,11 @@ function ContextMenu() {
       <button
         className="pl-4 pr-4 cursor-pointer"
         onClick={() => {
-          window.api.removeTab(id)
+          if (context?.type === 'profile') {
+            window.api.removeProfile(context.id)
+          } else if (context?.type === 'tab') {
+            window.api.removeTab(context.id)
+          }
           window.api.closeContextMenu()
         }}
       >

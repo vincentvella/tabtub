@@ -19,7 +19,7 @@ const SidebarButton = (props: Tab) => {
     if (id === 'add') {
       window.api.closeContextMenu()
     } else {
-      window.api.openContextMenu(id, {
+      window.api.openContextMenu(id, 'tab', {
         x: position.x + position.width,
         y: position.y + position.height,
       })

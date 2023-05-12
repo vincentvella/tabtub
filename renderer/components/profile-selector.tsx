@@ -22,8 +22,18 @@ const ProfileNode = ({ profile }: { profile: Profile }) => {
     }
   }, [isEditable])
 
+  const openContextMenu = React.useCallback<React.MouseEventHandler<HTMLButtonElement>>((e) => {
+    const element = e.target as HTMLElement
+    const position = element.getBoundingClientRect()
+    window.api.openContextMenu(profile.id, 'profile', {
+      x: position.x,
+      y: position.bottom + position.height + position.height,
+    })
+  }, [])
+
   return (
     <button
+      onContextMenu={openContextMenu}
       onClick={() => {
         window?.api.changeProfile(profile.id)
       }}
@@ -35,6 +45,7 @@ const ProfileNode = ({ profile }: { profile: Profile }) => {
     >
       <div className="hover:bg-gray-600">
         <div
+          suppressContentEditableWarning
           id={`${profile.id}`}
           contentEditable={isEditable}
           onBlur={() => {
@@ -44,7 +55,7 @@ const ProfileNode = ({ profile }: { profile: Profile }) => {
             }
           }}
           onInput={(e) => (newValue.current = e.currentTarget.textContent || '')}
-          className="pt-1 pb-1 pr-2 pl-2 outline-none"
+          className="pt-1 pb-1 pr-2 pl-2 outline-none select-none"
         >
           <span>{profile.name}</span>
         </div>
