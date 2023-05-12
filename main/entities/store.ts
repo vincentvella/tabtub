@@ -90,6 +90,11 @@ class ProfileStorage {
       .filter((profile) => profile.tabId === tabId)
   }
 
+  updateProfile(id: string, name: string) {
+    const profile = this.get(id)
+    this.store.set(id, { ...profile, name })
+  }
+
   removeByTabId(tabId: string) {
     this.getByTabId(tabId).forEach((profile) => this.remove(profile.id))
   }

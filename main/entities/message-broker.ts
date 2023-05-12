@@ -26,6 +26,7 @@ export class MessageBroker {
     [ACTIONS.REMOVE_TAB]: 'removeTab',
     [ACTIONS.REQUEST_TABS]: 'handleTabsRequest',
     [ACTIONS.REQUEST_PROFILES]: 'handleProfilesRequest',
+    [ACTIONS.UPDATE_PROFILE]: 'updateProfile',
   }
 
   private handleMessage: (event: Electron.Event, channel: string, ...args: any[]) => void = (
@@ -156,6 +157,16 @@ export class MessageBroker {
       profiles
     )
     return id
+  }
+
+  public updateProfile({ id, name }: Omit<Profile, 'tabId'>) {
+    this.app.store.profileStorage.updateProfile(id, name)
+    const profiles = this.app.store.profileStorage.getByTabId(this.app.activeId)
+    this.app.application.webContents.send(
+      CHANNELS.APPLICATION,
+      ACTIONS.SUBSCRIBE_PROFILES,
+      profiles
+    )
   }
 
   public removeTab(id: string) {

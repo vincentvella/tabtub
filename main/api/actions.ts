@@ -13,4 +13,5 @@ export const ACTIONS = {
   SUBSCRIBE_ACTIVE_PROFILE: 'subscribe-active-profile',
   SUBSCRIBE_PROFILES: 'subscribe-profiles',
   SUBSCRIBE_TABS: 'subscribe-tabs',
+  UPDATE_PROFILE: 'update-profile',
 }

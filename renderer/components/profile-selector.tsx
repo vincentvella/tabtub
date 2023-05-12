@@ -4,6 +4,55 @@ import { Profile } from '../../main/entities/store'
 import { useActiveId } from '../context/active-id-context'
 import { useProfiles } from '../hooks/useProfiles'
 
+const ProfileNode = ({ profile }: { profile: Profile }) => {
+  const [isEditable, setIsEditable] = React.useState(false)
+  const newValue = React.useRef('')
+
+  React.useEffect(() => {
+    if (isEditable) {
+      const element = document.getElementById(`${profile.id}`)
+      element?.focus()
+      element.addEventListener('keypress', (evt) => {
+        // Prevent enter from being pressed in non-deprecated fashion
+        if (evt.key === 'Enter') {
+          evt.preventDefault()
+          element?.blur()
+        }
+      })
+    }
+  }, [isEditable])
+
+  return (
+    <button
+      onClick={() => {
+        window?.api.changeProfile(profile.id)
+      }}
+      onDoubleClick={() => {
+        setIsEditable(true)
+      }}
+      key={profile.id}
+      className="h-full flex items-center"
+    >
+      <div className="hover:bg-gray-600">
+        <div
+          id={`${profile.id}`}
+          contentEditable={isEditable}
+          onBlur={() => {
+            setIsEditable(false)
+            if (newValue.current) {
+              window?.api.updateProfile(profile.id, newValue.current)
+            }
+          }}
+          onInput={(e) => (newValue.current = e.currentTarget.textContent || '')}
+          className="pt-1 pb-1 pr-2 pl-2 outline-none"
+        >
+          <span>{profile.name}</span>
+        </div>
+      </div>
+    </button>
+  )
+}
+
 function ProfileSelector() {
   const activeId = useActiveId()
   const profiles = useProfiles(activeId)
@@ -19,19 +68,7 @@ function ProfileSelector() {
         <ErrorBoundary FallbackComponent={null}>
           <div className="flex flex-row">
             {profiles.map((profile: Profile) => (
-              <button
-                onClick={() => {
-                  window?.api.changeProfile(profile.id)
-                }}
-                key={profile.id}
-                className="h-full flex items-center"
-              >
-                <div className="hover:bg-gray-600">
-                  <div className="pt-1 pb-1 pr-2 pl-2">
-                    <span>{profile.name}</span>
-                  </div>
-                </div>
-              </button>
+              <ProfileNode profile={profile} key={profile.id} />
             ))}
             <div>
               <button
