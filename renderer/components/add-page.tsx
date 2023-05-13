@@ -2,7 +2,9 @@ import React from 'react'
 import { z, ZodError } from 'zod'
 import Button, { ButtonProps } from '../components/button'
 import { useActiveId } from '../context/active-id-context'
+import IconSelector from './icon-selector'
 
+// TODO: move to hosted config
 const contents = new Map<string, ButtonProps>([
   ['github', { icon: 'FaGithub', link: 'https://github.com' }],
   ['mail', { icon: 'Gmail', link: 'https://mail.google.com' }],
@@ -19,16 +21,16 @@ const url = z.string().url().min(1)
 
 const TabCreator = () => {
   const [error, setError] = React.useState<string>('')
+  const [selectingIcon, setSelectingIcon] = React.useState<boolean>(false)
   const urlRef = React.useRef<HTMLInputElement>()
 
-  const submit = React.useCallback<React.FormEventHandler<HTMLFormElement>>((e) => {
+  const submitUrl = React.useCallback<React.FormEventHandler<HTMLFormElement>>((e) => {
     e.preventDefault()
     try {
-      const validatedUrl = url.parse(urlRef.current.value)
+      // If URL is parsed correctly - we can proceed to icon selection
+      url.parse(urlRef.current.value)
       setError('')
-      window?.api.addTab({ url: validatedUrl, icon: 'FaBeer' })
-      // Store url persistently
-      // Navigate user to new tab
+      setSelectingIcon(true)
     } catch (error) {
       if (error instanceof ZodError) {
         if (error.flatten().formErrors[0]) {
@@ -38,9 +40,13 @@ const TabCreator = () => {
     }
   }, [])
 
+  const addProfile = React.useCallback((icon: string) => {
+    window?.api.addTab({ url: urlRef.current.value, icon })
+  }, [])
+
   return (
     <>
-      <form onSubmit={submit} className="flex flex-row">
+      <form onSubmit={submitUrl} className="flex flex-row">
         <input
           ref={urlRef}
           className="bg-indigo-900 text-xl p-2 w-full rounded-tl-xl rounded-bl-xl focus:outline-none"
@@ -52,7 +58,9 @@ const TabCreator = () => {
         </button>
       </form>
       <span className="pl-2 text-red-500">{error}</span>
-      {selectingIcon && <IconSelector />}
+      {selectingIcon && (
+        <IconSelector onCancel={() => setSelectingIcon(false)} onSubmit={addProfile} />
+      )}
     </>
   )
 }

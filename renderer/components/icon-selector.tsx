@@ -4,8 +4,14 @@ import Icons from '../icons'
 const options = ['Select', 'Upload'] as const
 type Option = Lowercase<(typeof options)[number]>
 
-const IconSelector = () => {
+type IconSelectorProps = {
+  onSubmit: (icon: string) => void
+  onCancel: () => void
+}
+
+const IconSelector: React.FC<IconSelectorProps> = ({ onCancel, onSubmit }) => {
   const [mode, setMode] = React.useState<Option>('select')
+  const [selectedIcon, setSelectedIcon] = React.useState<string | null>(null)
   const [iconSet, setIconSet] = React.useState(Object.entries(Icons))
 
   const filterIcons = (filter: string) => {
@@ -69,7 +75,12 @@ const IconSelector = () => {
                       {/* // list of all icons */}
                       <div className="grid grid-cols-3 gap-4">
                         {iconSet.map(([key, Icon]) => (
-                          <div className="flex flex-col items-center">
+                          <button
+                            role="button"
+                            onClick={() => setSelectedIcon(selectedIcon === key ? null : key)}
+                            data-active={`${selectedIcon === key}`}
+                            className="flex flex-col items-center data-active:bg-gray-700 data-active:rounded-lg data-active:shadow-lg data-active:border-transparent data-active:border-2 data-active:border-gray-100 data-active:dark:border-gray-700 data-active:dark:bg-gray-800 data-active:dark:text-white data-inactive:border-2 data-inactive:border-transparent"
+                          >
                             <div className="flex items-center justify-center w-12 h-12 mb-2 rounded-full bg-gray-800">
                               <Icon size={24} />
                             </div>
@@ -77,7 +88,7 @@ const IconSelector = () => {
                               {key.slice(0, 16)}
                               {key.length > 16 && '...'}
                             </div>
-                          </div>
+                          </button>
                         ))}
                       </div>
                     </>
@@ -87,12 +98,18 @@ const IconSelector = () => {
             </div>
             <div className="bg-gray-900 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
               <button
+                onClick={() => {
+                  if (selectedIcon) {
+                    onSubmit(selectedIcon)
+                  }
+                }}
                 type="button"
                 className="inline-flex w-full justify-center rounded-md bg-red-500 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-600 sm:ml-3 sm:w-auto"
               >
                 Submit
               </button>
               <button
+                onClick={onCancel}
                 type="button"
                 className="mt-3 inline-flex w-full justify-center rounded-md bg-gray-900 px-3 py-2 text-sm font-semibold text-gray-200 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-800 sm:mt-0 sm:w-auto"
               >
