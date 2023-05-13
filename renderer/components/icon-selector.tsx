@@ -1,5 +1,6 @@
 import React, { PropsWithChildren } from 'react'
 import Icons from '../icons'
+import { FaUpload } from 'react-icons/fa'
 
 const options = ['Select', 'Upload'] as const
 type Option = Lowercase<(typeof options)[number]>
@@ -94,6 +95,15 @@ const IconSelector: React.FC<IconSelectorProps> = ({ onCancel, onSubmit }) => {
                     </>
                   </div>
                 </>
+              )}
+              {mode === 'upload' && (
+                // TODO: Implement upload
+                <div className="mt-6 flex flex-col items-center justify-center min-h-400 border-dashed border-gray-200 border">
+                  <div className="flex items-center justify-center w-12 h-12 mb-2 rounded-full bg-gray-800">
+                    <FaUpload size={24} />
+                  </div>
+                  <div className="text-sm text-gray-200">Upload coming soon...</div>
+                </div>
               )}
             </div>
             <div className="bg-gray-900 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
