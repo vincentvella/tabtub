@@ -52,6 +52,7 @@ const TabCreator = () => {
         </button>
       </form>
       <span className="pl-2 text-red-500">{error}</span>
+      {selectingIcon && <IconSelector />}
     </>
   )
 }
