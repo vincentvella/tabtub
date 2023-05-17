@@ -10,3 +10,4 @@ files:
       - package.json
       - app
 publish: null
+beforePack: scripts/before-pack.js

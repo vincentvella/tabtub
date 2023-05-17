@@ -1,5 +1,5 @@
+import type { Tab } from '../entities/store'
 import { ipcRenderer } from 'electron'
-import { Tab } from '../entities/store'
 import { ACTIONS } from './actions'
 import { CHANNELS } from './events'
 
