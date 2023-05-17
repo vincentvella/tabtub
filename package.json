@@ -8,6 +8,7 @@
   "scripts": {
     "dev": "concurrently \"esbuild main/preload.ts --external:electron --watch=forever --bundle --minify --sourcemap --outfile=app/preload.js\" \"nextron\" \"node scripts/zombie_killer.js\"",
     "build": "nextron build",
+    "build:next": "next build renderer",
     "build:preload": "esbuild main/preload.ts --external:electron --bundle --minify --sourcemap --outfile=app/preload.js",
     "build:all": "nextron build --all",
     "build:win32": "nextron build --win --ia32",
