@@ -9,11 +9,8 @@ if (!CONSTANTS.isProd) {
 }
 
 ;(async () => {
-  console.log('HERE')
   await electron.whenReady()
-  console.log('READY')
   const app = new App()
-  console.log('DONE')
   new MessageBroker(app)
 })()
 

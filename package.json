@@ -1,9 +1,9 @@
 {
   "private": true,
-  "name": "my-nextron-app",
+  "name": "tabtub",
   "description": "My application description",
   "version": "1.0.0",
-  "author": "Yoshihide Shiono <shiono.yoshihide@gmail.com>",
+  "author": "Vince Vella <vince@vellapps.com>",
   "main": "app/background.js",
   "scripts": {
     "dev": "concurrently \"esbuild main/preload.ts --external:electron --watch=forever --bundle --minify --sourcemap --outfile=app/preload.js\" \"nextron\" \"node scripts/zombie_killer.js\"",

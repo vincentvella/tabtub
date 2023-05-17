@@ -58,7 +58,6 @@ export class App {
   private setupDevtools() {
     this.application.webContents.openDevTools({ mode: 'detach' })
     this.application.webContents.on('devtools-reload-page', (_event, _dirty, _image) => {
-      console.log('RELOAD')
       this.application.webContents.reload()
     })
   }

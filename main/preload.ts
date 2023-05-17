@@ -5,4 +5,4 @@ import { ElectronApi } from './api'
 // in order to use ipcRenderer without exposing the entire object
 contextBridge.exposeInMainWorld('api', ElectronApi)
 
-console.log('Context Bridge exposed...', ElectronApi)
+console.log('Context Bridge exposed...')
