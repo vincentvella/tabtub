@@ -2,7 +2,7 @@ name: Build/release
 
 on:
   push:
-    branches:    
+    # branches:
       # - 'releases/**'
     # Sequence of patterns matched against refs/tags
     tags:        
@@ -14,7 +14,7 @@ jobs:
 
     strategy:
       matrix:
-        os: [macos-latest, ubuntu-latest, windows-latest]
+        os: [macos-latest, windows-latest]
 
     steps:
       - name: Check out Git repository
