@@ -11,3 +11,6 @@ files:
       - app
 publish: null
 beforePack: scripts/before-pack.js
+afterSign: electron-builder-notarize
+mac:
+  hardenedRuntime: true
