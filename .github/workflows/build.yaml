@@ -1,6 +1,12 @@
 name: Build/release
 
-on: push
+on:
+  push:
+    branches:    
+      # - 'releases/**'
+    # Sequence of patterns matched against refs/tags
+    tags:        
+      - v*
 
 jobs:
   release:
@@ -12,7 +18,7 @@ jobs:
 
     steps:
       - name: Check out Git repository
-        uses: actions/checkout@v1
+        uses: actions/checkout@v3
 
       - name: Install Node.js, NPM and Yarn
         uses: actions/setup-node@v1
