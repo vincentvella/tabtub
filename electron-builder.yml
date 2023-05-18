@@ -9,7 +9,8 @@ files:
     filter:
       - package.json
       - app
-publish: null
+publish: 
+  - github
 beforePack: scripts/before-pack.js
 afterSign: electron-builder-notarize
 mac:
