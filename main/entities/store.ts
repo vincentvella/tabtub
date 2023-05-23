@@ -49,6 +49,10 @@ class TabStorage {
       ...value,
     }))
   }
+
+  getByIndex(index: number) {
+    return this.getAll()?.[index] || null
+  }
 }
 
 export type Profile = {
@@ -101,6 +105,10 @@ class ProfileStorage {
 
   removeAll() {
     Object.keys(this.store.store).forEach((key) => this.remove(key))
+  }
+
+  getByIndex(tabId: string, index: number) {
+    return this.getByTabId(tabId)?.[index] || null
   }
 }
 

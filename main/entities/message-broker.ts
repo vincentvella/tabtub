@@ -1,7 +1,9 @@
+import { Menu, MenuItem, MenuItemConstructorOptions } from 'electron'
 import { ACTIONS } from '../api/actions'
 import { CHANNELS } from '../api/events'
 import { App } from './app'
 import { Profile, Tab } from './store'
+import { createMenuTemplate } from '../helpers/template'
 
 type MessageBrokerHandlerKeys = keyof InstanceType<typeof MessageBroker>
 
@@ -94,6 +96,45 @@ export class MessageBroker {
       ACTIONS.SUBSCRIBE_ACTIVE_PROFILE,
       this.app.activeTabState.get(this.app.activeId)
     )
+    this.updateTabMenu()
+  }
+
+  private updateTabMenu() {
+    const urls = this.app.store.tabStorage.getAll()
+
+    const template = createMenuTemplate()
+    const fileMenu = template.find((item) => item.role === 'fileMenu')!
+
+    const tabsSubmenu = []
+    const profilesSubmenu = []
+    urls.forEach((url, index) => {
+      tabsSubmenu.push({
+        label: url.url.replace('https://', '').replace('http://', '').split('/')[0] || url.url,
+        accelerator: 'Cmd+' + (index + 1),
+        id: url.id,
+        click: () => this.handleTabChange(url.id),
+      })
+    })
+    ;(fileMenu.submenu! as MenuItemConstructorOptions[]).unshift({
+      label: 'Tabs',
+      submenu: tabsSubmenu,
+    })
+
+    const profiles = this.handleProfilesRequest(this.app.activeId)
+    profiles.forEach((profile, index) => {
+      profilesSubmenu.push({
+        label: profile.name,
+        accelerator: 'Cmd+Shift+' + (index + 1),
+        id: profile.id,
+        click: () => this.handleProfileChange(profile.id),
+      })
+    })
+    ;(fileMenu.submenu! as MenuItemConstructorOptions[]).unshift({
+      label: 'Profiles',
+      submenu: profilesSubmenu,
+    })
+
+    Menu.setApplicationMenu(Menu.buildFromTemplate(template))
   }
 
   public handleProfileChange(id: string) {
@@ -119,11 +160,13 @@ export class MessageBroker {
       ACTIONS.SUBSCRIBE_ACTIVE_PROFILE,
       this.app.activeTabState.get(this.app.activeId)
     )
+    this.updateTabMenu()
   }
 
   public handleTabsRequest() {
     const urls = this.app.store.tabStorage.getAll() || []
     this.app.application.webContents.send(CHANNELS.APPLICATION, ACTIONS.REQUEST_TABS, urls)
+    this.updateTabMenu()
     return urls
   }
 
@@ -157,6 +200,7 @@ export class MessageBroker {
       ACTIONS.SUBSCRIBE_PROFILES,
       profiles
     )
+    this.handleProfileChange(id)
     return id
   }
 
