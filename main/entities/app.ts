@@ -1,5 +1,5 @@
 import path from 'path'
-import { BrowserView, session } from 'electron'
+import { BrowserView, session, shell } from 'electron'
 import { CONSTANTS } from '../helpers/constants'
 import Store from './store'
 import { BrowserWindow } from './browser-window'
@@ -117,6 +117,14 @@ export class App {
       y,
       width: width - CONSTANTS.sidebarWidth + CONSTANTS.extraWidth,
       height: newHeight,
+    })
+    browser.webContents.setWindowOpenHandler(({ url }) => {
+      if (url.startsWith('file://')) {
+        return { action: 'allow' }
+      }
+      // open url in a browser and prevent default
+      shell.openExternal(url)
+      return { action: 'deny' }
     })
   }
 
