@@ -1,4 +1,5 @@
-<img width="1002" alt="Screenshot 2023-06-02 at 5 07 00 PM" src="https://github.com/vincentvella/tabtub/assets/22749569/c2027fa2-e5e1-4692-b86f-bbab66ebf8df">
+<img width="1005" alt="Screenshot 2023-06-02 at 5 11 23 PM" src="https://github.com/vincentvella/tabtub/assets/22749569/3b5d91ec-ef2c-4cd2-84f8-667765f26b76">
+
 
 
 ## TabTub
