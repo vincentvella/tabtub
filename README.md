@@ -1,38 +1,5 @@
-<p align="center"><img src="https://i.imgur.com/a9QWW0v.png"></p>
+<img width="1002" alt="Screenshot 2023-06-02 at 5 07 00 PM" src="https://github.com/vincentvella/tabtub/assets/22749569/a78acb4e-c1bc-47d4-af16-cd8cbb715e97">
 
-## Usage
+## TabTub
 
-### Create an App
-
-```
-# with npx
-$ npx create-nextron-app my-app --example with-tailwindcss
-
-# with yarn
-$ yarn create nextron-app my-app --example with-tailwindcss
-
-# with pnpx
-$ pnpx create-nextron-app my-app --example with-tailwindcss
-```
-
-### Install Dependencies
-
-```
-$ cd my-app
-
-# using yarn or npm
-$ yarn (or `npm install`)
-
-# using pnpm
-$ pnpm install --shamefully-hoist
-```
-
-### Use it
-
-```
-# development mode
-$ yarn dev (or `npm run dev` or `pnpm run dev`)
-
-# production build
-$ yarn build (or `npm run build` or `pnpm run build`)
-```
+I've noticed that I consistently have the same 3/4 tabs open all day so I made a small electron app designed to allow me to focus the app and use hotkeys to snap to different open tabs. Chrome, Arc, Safari - they support bookmarks but overall I tend to find it really difficult to keep track of what's open and when.
